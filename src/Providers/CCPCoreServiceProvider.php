@@ -5,15 +5,11 @@ namespace Techquity\CloudCommercePro\Providers;
 use Illuminate\Console\Scheduling\Schedule;
 
 use Aero\Common\Providers\ModuleServiceProvider;
-use Aero\Cart\Events\OrderSuccessful;
-use Aero\Catalog\Events\ProductCreated;
-use Aero\Catalog\Events\ProductUpdated;
+
+use Techquity\CloudCommercePro\Http\Controllers\CcpController;
 
 
-use Techquity\CloudCommercePro\Http\Controllers\CCPController;
-
-
-class CCPCoreServiceProvider extends ModuleServiceProvider
+class CcpCoreServiceProvider extends ModuleServiceProvider
 {
     /**
      * The event handler mappings for the module.
@@ -49,7 +45,7 @@ class CCPCoreServiceProvider extends ModuleServiceProvider
             $log = storage_path('logs/scheduler.log');
 
             \Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'ccp'], function() {
-                \Route::get('/categories', [CCPController::class, 'categories'])->name('admin.ccp.categories');
+                \Route::get('/categories', [CcpController::class, 'categories'])->name('admin.ccp.categories');
             });
 
 

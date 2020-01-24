@@ -4,7 +4,7 @@ namespace Techquity\CloudCommercePro\Providers;
 
 use Aero\Common\Providers\ModuleServiceProvider;
 
-class CCPServiceProvider extends ModuleServiceProvider
+class CcpServiceProvider extends ModuleServiceProvider
 {
 
     /**
@@ -31,7 +31,7 @@ class CCPServiceProvider extends ModuleServiceProvider
         ], 'config');
 
         if (config('aero.cloudcommercepro.enabled') === true) {
-            $this->app->register(CCPCoreServiceProvider::class);
+            $this->app->register(CcpCoreServiceProvider::class);
         }
     }
 }

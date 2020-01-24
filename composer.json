@@ -12,7 +12,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Techquity\\CloudCommercePro\\Providers\\CCPServiceProvider"
+        "Techquity\\CloudCommercePro\\Providers\\CcpServiceProvider"
       ]
     }
   }
