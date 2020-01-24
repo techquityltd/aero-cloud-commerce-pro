@@ -26,13 +26,13 @@ class CcpController
 
             foreach($parent->getDescendantsAndSelf() as $descendant) {
 
-                $return[] = (['id' => $descendant->id, 'name' => $descendant->name, 'parent_id' => $descendant->parent_id]);
+                $return[$descendant->id] = (['id' => $descendant->id, 'name' => $descendant->name, 'parent_id' => $descendant->parent_id]);
 
-            } 
+            }
 
         }
 
-        return json_encode($return);
+        return response()->json(collect($return)->toJson());
 
     }
 
