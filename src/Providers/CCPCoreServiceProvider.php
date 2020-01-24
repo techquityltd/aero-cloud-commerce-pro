@@ -44,8 +44,8 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
 
             $log = storage_path('logs/scheduler.log');
 
-            \Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'ccp'], function() {
-                \Route::get('/categories', [CcpController::class, 'categories'])->name('admin.ccp.categories');
+            \Route::group(['middleware' => ['web'], 'prefix' => 'ccp'], function() {
+                \Route::get('/categories', [CcpController::class, 'categories'])->name('ccp.categories');
             });
 
 
