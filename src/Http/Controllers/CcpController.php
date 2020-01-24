@@ -28,7 +28,7 @@ class CcpController
 
                 $return[] = (['id' => $descendant->id, 'name' => $descendant->name, 'parent_id' => $descendant->parent_id]);
 
-            }
+            } 
 
         }
 
