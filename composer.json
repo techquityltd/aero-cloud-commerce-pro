@@ -1,5 +1,5 @@
 {
-  "name": "techquity/cloud-commerce-pro",
+  "name": "techquity/aero-cloud-commerce-pro",
   "description": "Integration between your Aero store and Cloud Commerce Pro.",
   "autoload": {
     "psr-4": {
