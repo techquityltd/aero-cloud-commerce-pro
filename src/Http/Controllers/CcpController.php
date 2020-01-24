@@ -17,6 +17,23 @@ class CcpController
      */
     public function categories()
     {
-        $tree = Category::with('CategoryLang')->all()->toHierarchy();
+        $return = [];
+
+        $parents = Category::all()->toHierarchy();
+
+        foreach($parents as $parent) {
+
+
+            foreach($parent->getDescendantsAndSelf() as $descendant) {
+
+                $return[] = (['id' => $descendant->id, 'name' => $descendant->name, 'parent_id' => $descendant->parent_id]);
+
+            }
+
+        }
+
+        return json_encode($return);
+
     }
+
 }
