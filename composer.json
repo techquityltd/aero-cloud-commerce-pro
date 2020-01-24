@@ -1,0 +1,19 @@
+{
+  "name": "techquity/cloud-commerce-pro",
+  "description": "Integration between your Aero store and Cloud Commerce Pro.",
+  "autoload": {
+    "psr-4": {
+      "Techquity\\CloudCommercePro\\": "src/"
+    }
+  },
+  "require": {
+    "aerocommerce/core" : "^0.1"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Techquity\\CloudCommercePro\\Providers\\CCPServiceProvider"
+      ]
+    }
+  }
+}
