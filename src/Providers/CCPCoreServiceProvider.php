@@ -8,7 +8,6 @@ use Aero\Common\Providers\ModuleServiceProvider;
 
 use Techquity\CloudCommercePro\Http\Controllers\CcpController;
 
-
 class CcpCoreServiceProvider extends ModuleServiceProvider
 {
     /**
@@ -16,18 +15,7 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
      *
      * @var array
      */
-    protected $listen = [
-        //
-        //OrderSuccessful::class => [
-        //    OrderSuccessfulListener::class,
-        //],
-        //ProductCreated::class => [
-        //    ProductCreatedListener::class
-        //],
-        //ProductUpdated::class => [
-        //    ProductUpdatedListener::class
-        //]
-    ];
+    protected $listen = [];
 
     /**
      * Bootstrap any module services.
@@ -44,8 +32,10 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
 
             $log = storage_path('logs/scheduler.log');
 
-            \Route::group(['middleware' => ['web'], 'prefix' => 'ccp'], function() {
-                \Route::get('/categories', [CcpController::class, 'categories'])->name('ccp.categories');
+            \Route::middleware(['api'])->group(function () {
+                \Route::match(['get', 'post'], 'ccp/categories', [CcpController::class, 'categories'])->name('ccp.categories');
+                \Route::match(['get', 'post'], 'ccp/listings', [CcpController::class, 'listings'])->name('ccp.listings');
+                \Route::match(['get', 'post'], 'ccp/orders', [CcpController::class, 'orders'])->name('ccp.orders');
             });
 
 
@@ -60,14 +50,6 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
-        //$this->commands([
-        //    RemoveDuplicate::class,
-        //    UpdateStock::class,
-        //    CreateOrder::class,
-        //    UpdateOrder::class,
-        //    CreateProduct::class,
-        //    UpdateProduct::class,
-        //    SyncProduct::class
-        //]);
+        
     }
 }

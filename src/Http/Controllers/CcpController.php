@@ -15,9 +15,8 @@ class CcpController
      * @param  int  $orderId
      * @return Response
      */
-    public function order($orderId)
+    public function categories()
     {
-        $order = Order::findOrFail($orderId);
-        CreateOrderJob::dispatch($order);
+        $tree = Category::with('CategoryLang')->all()->toHierarchy();
     }
 }
