@@ -31,7 +31,7 @@ class CcpController
 
         }
 
-        return response()->json(collect($return)->toJson());
+        return response()->json(($return), JSON_UNESCAPED_UNICODE);
 
     }
 
@@ -53,7 +53,7 @@ class CcpController
         foreach ($variants as $variant) {
 
             if(isset($variant->product)) {
-                
+
                 $return[$variant->id]['id'] = $variant->id;
                 $return[$variant->id]['sku'] = $variant->sku;
                 $return[$variant->id]['image'] = isset($variant->product->images->first()->file) ? trim(env('APP_URL').'/').($variant->product->images->first()->file) : null;
@@ -82,7 +82,7 @@ class CcpController
 
 
         }
-        return response()->json(collect($return)->toJson());
+        return response()->json(($return), JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -94,7 +94,7 @@ class CcpController
     public function orders()
     {
         $return = [];
-        return response()->json(collect($return)->toJson());
+        return response()->json(($return), JSON_UNESCAPED_UNICODE);
     }
 
 }
