@@ -5,6 +5,7 @@ namespace Techquity\CloudCommercePro\Http\Controllers;
 use Aero\Cart\Models\Order;
 use Aero\Catalog\Models\Category;
 use Aero\Catalog\Models\Variant;
+use Illuminate\Support\Arr;
 
 class CcpController
 {
@@ -46,11 +47,7 @@ class CcpController
     {
         $return = [];
 
-        $variants = Variant::cursor()->filter(function ($variant) {
-            return $variant->id;
-        });
-
-        foreach ($variants as $variant) {
+        foreach (Variant::cursor() as $variant) {
 
             if(isset($variant->product)) {
 
@@ -78,15 +75,15 @@ class CcpController
                 })->values();
 
                 $return[$variant->id]['parent_ref'] = $variant->product->model;
+
             }
+        };
 
-
-        }
         return response()->json(($return), JSON_UNESCAPED_UNICODE);
     }
 
     /**
-     * Listings for CCP.
+     * Orders for CCP.
      *
      *
      * @return Object
@@ -94,6 +91,76 @@ class CcpController
     public function orders()
     {
         $return = [];
+
+        foreach (Order::whereIn('order_status_id', config('aero.cloudcommercepro.order_statuses'))->cursor() as $order) {
+
+            $return[$order->id]['reference'] = $order->reference;
+            $return[$order->id]['order_status'] = $order->status->name;
+            $return[$order->id]['order_date'] = $order->created_at;
+
+            $return[$order->id]['payments'] = $order->payments->map(function($payment) use ($order) {
+
+                return collect([
+                    'status' => $payment->state,
+                    'method' => $payment->method->name,
+                    'date' => $payment->created_at,
+
+                ])->toArray();
+            })->values();
+
+
+            $return[$order->id]['total'] = ($order->Total + $order->TotalTax) / 100;
+            $return[$order->id]['shipping'] = ($order->ShippingRounded) / 100;
+            $return[$order->id]['discount'] = ($order->DiscountRounded) / 100;
+            $return[$order->id]['currency'] = $order->currency->code;
+
+            $return[$order->id]['shipping_method'] = $order->shippingMethod->name;
+            $return[$order->id]['shipping_date'] = null;
+
+            $return[$order->id]['billing_name'] = $order->billingAddress->first_name ." ".$order->billingAddress->last_name;
+            $return[$order->id]['billing_address_company'] = $order->billingAddress->company;
+            $return[$order->id]['billing_address1'] = $order->billingAddress->line_1;
+            $return[$order->id]['billing_address2'] = $order->billingAddress->line_2;
+
+            $return[$order->id]['billing_city'] = $order->billingAddress->city;
+            $return[$order->id]['billing_state'] =  $order->billingAddress->zone_name;
+            $return[$order->id]['billing_zip'] = $order->billingAddress->postcode;
+            $return[$order->id]['billing_country'] = $order->billingAddress->country_code;
+            $return[$order->id]['billing_phone'] = $order->billingAddress->phone;
+            $return[$order->id]['billing_mobile'] = $order->billingAddress->mobile;
+            $return[$order->id]['billing_email'] = $order->email;
+
+
+            $return[$order->id]['shipping_name'] = $order->shippingAddress->first_name ." ".$order->billingAddress->last_name;
+            $return[$order->id]['shipping_address_company'] = $order->shippingAddress->company;
+            $return[$order->id]['shipping_address1'] = $order->shippingAddress->line_1;
+            $return[$order->id]['shipping_address2'] = $order->shippingAddress->line_2;
+
+            $return[$order->id]['shipping_city'] = $order->shippingAddress->city;
+            $return[$order->id]['shipping_state'] = $order->shippingAddress->zone_name;
+            $return[$order->id]['shipping_zip'] = $order->shippingAddress->postcode;
+            $return[$order->id]['shipping_country'] = $order->shippingAddress->country_code;
+            $return[$order->id]['shipping_phone'] = $order->shippingAddress->phone;
+            $return[$order->id]['shipping_mobile'] = $order->shippingAddress->mobile;
+            $return[$order->id]['shipping_email'] = $order->email;
+
+            $return[$order->id]['items'] = $order->items->map(function ($item) {
+                return collect([
+                    'id' => $item->buyable->id,
+                    'reference' => $item->key,
+                    'sku' => $item->buyable->sku,
+                    'barcode' => $item->buyable->barcode,
+                    'name' => $item->buyable->product->name,
+                    'quantity' => $item->quantity,
+                    'price_ex' => ($item->price / 100),
+                    'vat' => ($item->tax / 100),
+                    'additional_options' => in_array("Gift Wrap", (Arr::pluck(isset($item->options) ? $item->options : [], 'name'))) ? 'Gift Wrap':'',
+
+                ])->toArray();
+            })->values();
+
+        }
+
         return response()->json(($return), JSON_UNESCAPED_UNICODE);
     }
 
