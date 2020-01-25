@@ -81,4 +81,16 @@ class CcpController
         return response()->json(collect($return)->toJson());
     }
 
+    /**
+     * Listings for CCP.
+     *
+     *
+     * @return Object
+     */
+    public function orders()
+    {
+        $return = [];
+        return response()->json(collect($return)->toJson());
+    }
+
 }
