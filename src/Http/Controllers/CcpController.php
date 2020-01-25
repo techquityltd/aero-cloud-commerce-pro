@@ -145,6 +145,9 @@ class CcpController
             $return[$order->id]['shipping_email'] = $order->email;
 
             $return[$order->id]['items'] = $order->items->map(function ($item) {
+
+                $rate =  $item->tax / $item->price * 100;
+
                 return collect([
                     'id' => $item->buyable->id,
                     'reference' => $item->key,
@@ -154,6 +157,7 @@ class CcpController
                     'quantity' => $item->quantity,
                     'price_ex' => ($item->price / 100),
                     'vat' => ($item->tax / 100),
+                    'vat_rate' => $rate,
                     'additional_options' => in_array("Gift Wrap", (Arr::pluck(isset($item->options) ? $item->options : [], 'name'))) ? 'Gift Wrap':'',
 
                 ])->toArray();
