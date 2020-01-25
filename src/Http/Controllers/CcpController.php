@@ -114,7 +114,7 @@ class CcpController
             $return[$order->id]['discount'] = ($order->DiscountRounded) / 100;
             $return[$order->id]['currency'] = $order->currency->code;
 
-            $return[$order->id]['shipping_method'] = $order->shippingMethod->name;
+            $return[$order->id]['shipping_method'] = isset($order->shippingMethod->name) ? $order->shippingMethod->name : null;
             $return[$order->id]['shipping_date'] = null;
 
             $return[$order->id]['billing_name'] = $order->billingAddress->first_name ." ".$order->billingAddress->last_name;
