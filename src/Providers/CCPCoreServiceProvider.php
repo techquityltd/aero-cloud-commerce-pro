@@ -34,9 +34,11 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
             $log = storage_path('logs/scheduler.log');
 
             \Route::middleware(['api'])->group(function () {
-                \Route::match(['get', 'post'], 'ccp/categories', [CcpController::class, 'categories'])->name('ccp.categories');
-                \Route::match(['get', 'post'], 'ccp/listings', [CcpController::class, 'listings'])->name('ccp.listings');
-                \Route::match(['get', 'post'], 'ccp/orders', [CcpController::class, 'orders'])->name('ccp.orders');
+                \Route::match(['get'], 'ccp/categories', [CcpController::class, 'categories'])->name('ccp.categories');
+                \Route::match(['get'], 'ccp/listings', [CcpController::class, 'listings'])->name('ccp.listings');
+                \Route::match(['get'], 'ccp/orders', [CcpController::class, 'orders'])->name('ccp.orders');
+                \Route::match(['post'], 'ccp/stock', [CcpController::class, 'stock'])->name('ccp.stock');
+                
             });
 
 

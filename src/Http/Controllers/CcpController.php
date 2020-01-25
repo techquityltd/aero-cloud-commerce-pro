@@ -7,8 +7,46 @@ use Aero\Catalog\Models\Category;
 use Aero\Catalog\Models\Variant;
 use Illuminate\Support\Arr;
 
+use Illuminate\Http\Request;
+
 class CcpController
 {
+
+    public function stock(Request $request) {
+
+        if ($request->isMethod('post')) {
+
+            dd(json_decode($request->getContent(), true));
+
+        }
+
+
+
+        //if($variant = Variant::where('sku', '=', (string)$sellable->sku_code)->first()) {
+        //
+        //    // Set the stock
+        //    $stock += $stockEntry->available_stock_level;
+        //
+        //    // Increment per warehouse
+        //    $variant->stock_level = $stock;
+        //
+        //    if (config('aero.veeqo.update_prices')) {
+        //        $variant->prices()->first()->update([
+        //            'value' => ($sellable->price * 100),
+        //        ]);
+        //    }
+        //
+        //    $variant->save();
+        //
+        //    $parent = Product::find($variant->product_id);
+        //    event(new ProductUpdated($parent));
+        //}
+    }
+    
+    public function dispatch() {
+
+    }
+
     /**
      * Category list for CCP.
      *
