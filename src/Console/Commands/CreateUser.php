@@ -1,6 +1,6 @@
 <?php
 
-namespace Techquity\CloudCommercePro\Commands;
+namespace Techquity\CloudCommercePro\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
