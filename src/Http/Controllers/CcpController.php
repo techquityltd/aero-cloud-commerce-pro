@@ -92,9 +92,35 @@ class CcpController
 
                 $return[$variant->id]['id'] = $variant->id;
                 $return[$variant->id]['sku'] = $variant->sku;
+                $return[$variant->id]['barcode'] = $variant->barcode;
                 $return[$variant->id]['image'] = isset($variant->product->images->first()->file) ? trim(env('APP_URL').'/').($variant->product->images->first()->file) : null;
                 $return[$variant->id]['url'] = $variant->product->getUrl(true);
                 $return[$variant->id]['name'] = $variant->product->name;
+                $return[$variant->id]['manufacturer'] = $variant->product->manufacturer->name;
+                $return[$variant->id]['parent_ref'] = $variant->product->model;
+                $return[$variant->id]['summary'] = $variant->product->summary;
+                $return[$variant->id]['description'] = $variant->product->description;
+
+                $return[$variant->id]['categories'] = $variant->product->categories->map(function($category) {
+
+                    return collect([
+                        'id' => $category->id,
+                        'name' => htmlspecialchars(
+                            collect($category->getAncestors()->pluck('name'))->push($category->name)->implode(' > '),
+                            ENT_QUOTES | ENT_HTML5
+                        ),
+
+                    ])->toArray();
+                })->values();
+
+                $return[$variant->id]['tags'] = $variant->product->tags->map(function($tag) {
+
+                    return collect([
+                        'name' => $tag->group->name,
+                        'value' => $tag->name,
+
+                    ])->toArray();
+                })->values();
 
                 $inc = setting('prices_inserted_inc_tax');
 
@@ -111,13 +137,13 @@ class CcpController
                 $rate = ($variant->getPriceForQuantity(1)->sale_value_inc - $variant->getPriceForQuantity(1)->sale_value_ex) / $variant->getPriceForQuantity(1)->sale_value_ex * 100;
 
                 $return[$variant->id]['vat_rate'] = round($rate);
-                $return[$variant->id]['barcode'] = $variant->id;
+                $return[$variant->id]['stock'] = $variant->stock_level;
 
                 $return[$variant->id]['attributes'] = $variant->attributes->map(function($attribute){
                     return ['name' => $attribute->group->name, 'value' => $attribute->name];
                 })->values();
 
-                $return[$variant->id]['parent_ref'] = $variant->product->model;
+
 
             }
         };
