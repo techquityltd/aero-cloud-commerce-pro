@@ -5,7 +5,7 @@ Integration into your Cloud Commerce Pro application from Aero.
 Installation requires Composer and PHP 7.2 or greater.
 
 ```
-composer require techquity/aero-cloud-commerce-pro
+composer require techquity/aero-cloud-commerce-pro --prefer-dist
 ```
 
 
