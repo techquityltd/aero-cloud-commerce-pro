@@ -35,7 +35,8 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
                 \Route::match(['get'], 'ccp/orders', [CcpController::class, 'orders'])->name('ccp.orders');
                 \Route::match(['get'], 'ccp/csv', [CcpController::class, 'csv'])->name('ccp.csv');
                 \Route::match(['post'], 'ccp/stock', [CcpController::class, 'stock'])->name('ccp.stock');
-                
+                \Route::match(['post'], 'ccp/dispatch', [CcpController::class, 'dispatch'])->name('ccp.dispatch');
+
             });
 
         });

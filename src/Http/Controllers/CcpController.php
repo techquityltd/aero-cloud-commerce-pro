@@ -3,6 +3,7 @@
 namespace Techquity\CloudCommercePro\Http\Controllers;
 
 use Aero\Cart\Models\Order;
+use Aero\Cart\Models\OrderStatus;
 use Aero\Catalog\Events\ProductUpdated;
 use Aero\Catalog\Models\Category;
 use Aero\Catalog\Models\Variant;
@@ -109,8 +110,35 @@ class CcpController
         }
     }
 
-    public function dispatch() {
+    /**
+     * Update order status from CCP.
+     *
+     *
+     * @return void
+     */
+    public function dispatch(Request $request) : void {
 
+        if ($request->isMethod('post')) {
+
+            $json = json_decode($request->getContent(), true);
+
+            if(is_array($json)) {
+
+                foreach($json as $order) {
+
+                    if(isset($order['reference']) && isset($order['status']) && $orderRecord = Order::where('reference', '=', $order['reference'])->first()) {
+
+                        switch($order['status']) {
+
+                            case "shipped":
+                                $orderRecord->setOrderStatus(OrderStatus::forState(OrderStatus::DISPATCHED)->first());
+                                break;
+
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
