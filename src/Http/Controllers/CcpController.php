@@ -3,46 +3,48 @@
 namespace Techquity\CloudCommercePro\Http\Controllers;
 
 use Aero\Cart\Models\Order;
+use Aero\Catalog\Events\ProductUpdated;
 use Aero\Catalog\Models\Category;
 use Aero\Catalog\Models\Variant;
+use Aero\Catalog\Models\Product;
 use Illuminate\Support\Arr;
 
 use Illuminate\Http\Request;
 
 class CcpController
 {
-
-    public function stock(Request $request) {
+    /**
+     * Category list for CCP.
+     *
+     *
+     * @return void
+     */
+    public function stock(Request $request) : void {
 
         if ($request->isMethod('post')) {
 
-            return (json_decode($request->getContent(), true));
+            $json = json_decode($request->getContent(), true);
 
+
+            if(is_array($json)) {
+
+                foreach($json as $stock) {
+
+                    if(isset($stock['sku']) && isset($stock['stock']) && $variant = Variant::where('sku', '=', (string)$stock['sku'])->first()) {
+
+                        // Update the stock
+                        $variant->stock_level = (int)$stock['stock'];
+                        $variant->save();
+
+                        // Trigger updated event
+                        $parent = Product::find($variant->product_id);
+                        event(new ProductUpdated($parent));
+                    }
+                }
+            }
         }
-
-
-
-        //if($variant = Variant::where('sku', '=', (string)$sellable->sku_code)->first()) {
-        //
-        //    // Set the stock
-        //    $stock += $stockEntry->available_stock_level;
-        //
-        //    // Increment per warehouse
-        //    $variant->stock_level = $stock;
-        //
-        //    if (config('aero.veeqo.update_prices')) {
-        //        $variant->prices()->first()->update([
-        //            'value' => ($sellable->price * 100),
-        //        ]);
-        //    }
-        //
-        //    $variant->save();
-        //
-        //    $parent = Product::find($variant->product_id);
-        //    event(new ProductUpdated($parent));
-        //}
     }
-    
+
     public function dispatch() {
 
     }
