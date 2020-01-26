@@ -16,7 +16,7 @@ class CcpController
 
         if ($request->isMethod('post')) {
 
-            dd(json_decode($request->getContent(), true));
+            return (json_decode($request->getContent(), true));
 
         }
 
@@ -109,7 +109,7 @@ class CcpController
                 $return[$variant->id]['barcode'] = $variant->id;
 
                 $return[$variant->id]['attributes'] = $variant->attributes->map(function($attribute){
-                    return [$attribute->group->name => $attribute->name];
+                    return ['name' => $attribute->group->name, 'value' => $attribute->name];
                 })->values();
 
                 $return[$variant->id]['parent_ref'] = $variant->product->model;
