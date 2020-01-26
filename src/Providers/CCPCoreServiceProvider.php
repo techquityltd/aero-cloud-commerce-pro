@@ -2,9 +2,6 @@
 
 namespace Techquity\CloudCommercePro\Providers;
 
-use Aero\Catalog\Models\Category;
-use Illuminate\Console\Scheduling\Schedule;
-
 use Aero\Common\Providers\ModuleServiceProvider;
 
 use Techquity\CloudCommercePro\Http\Controllers\CcpController;
@@ -29,11 +26,9 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
 
         $this->app->booted(static function () {
 
-            $schedule = app(Schedule::class);
+            $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
-            $log = storage_path('logs/scheduler.log');
-
-            \Route::middleware(['api'])->group(function () {
+            \Route::middleware(['auth:api'])->group(function () {
                 \Route::match(['get'], 'ccp/categories', [CcpController::class, 'categories'])->name('ccp.categories');
                 \Route::match(['get'], 'ccp/listings', [CcpController::class, 'listings'])->name('ccp.listings');
                 \Route::match(['get'], 'ccp/orders', [CcpController::class, 'orders'])->name('ccp.orders');
@@ -41,22 +36,6 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
                 
             });
 
-
-            Category::macro('getTranslatedNestedList', function($column, $key = null, $seperator = ' ')
-            {
-                $instance = new static;
-
-                $key = $key ?: $instance->getKeyName();
-                $depthColumn = $instance->getDepthColumnName();
-
-                $nodes = $instance->newQuery()->get()->toArray();
-
-                return array_combine(array_map(function ($node) use ($key) {
-                    return $node[$key];
-                }, $nodes), array_map(function ($node) use ($seperator, $depthColumn, $column) {
-                    return str_repeat($seperator, $node[$depthColumn]) . $node[$column][request()->store()->language];
-                }, $nodes));
-            });
         });
 
     }
@@ -68,6 +47,8 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
-
+        $this->commands([
+            CreateUser::class
+        ]);
     }
 }

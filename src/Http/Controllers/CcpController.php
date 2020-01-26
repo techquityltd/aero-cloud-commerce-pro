@@ -24,7 +24,7 @@ class CcpController
         if ($request->isMethod('post')) {
 
             $json = json_decode($request->getContent(), true);
-            
+
             if(is_array($json)) {
 
                 foreach($json as $stock) {
@@ -98,9 +98,13 @@ class CcpController
 
                 $inc = setting('prices_inserted_inc_tax');
 
-                $return[$variant->id]['price'] = $inc ? ($variant->getPriceForQuantity(1)->sale_value_inc / 100) : ($variant->getPriceForQuantity(1)->sale_value_ex / 100);
+                if($inc) {
 
-                if(!$inc){
+                    $return[$variant->id]['price'] = ($variant->getPriceForQuantity(1)->sale_value_inc / 100);
+
+                } else {
+
+                    $return[$variant->id]['price_ex'] = ($variant->getPriceForQuantity(1)->sale_value_ex / 100);
                     $return[$variant->id]['vat_amount'] = (($variant->getPriceForQuantity(1)->sale_value_inc-$variant->getPriceForQuantity(1)->sale_value_ex) / 100);
                 }
 
