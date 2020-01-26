@@ -5,6 +5,7 @@ namespace Techquity\CloudCommercePro\Providers;
 use Aero\Common\Providers\ModuleServiceProvider;
 
 use Techquity\CloudCommercePro\Http\Controllers\CcpController;
+use Techquity\CloudCommercePro\Console\Commands\CreateUser;
 
 class CcpCoreServiceProvider extends ModuleServiceProvider
 {
@@ -25,7 +26,7 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
         parent::boot();
 
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
-        
+
         $this->app->booted(static function () {
 
             \Route::middleware(['auth:api'])->group(function () {
