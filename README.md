@@ -14,7 +14,7 @@ composer require techquity/aero-cloud-commerce-pro
 The base configuration will not work with every project and it is required that the following command be ran to create a project specific configuration file.
 
 ```
-php artisan vendor:publish --provider="Techquity\CloudCommercePro\Providers\CCPServiceProvider"
+php artisan vendor:publish --provider="Techquity\CloudCommercePro\Providers\CcpServiceProvider"
 ```
 
 ## Migrations
@@ -25,9 +25,9 @@ php artisan migrate
 ```
 
 ## Create API User
-Add the api_token column to the users table
+Create the API user and retrieve the token, this token will need providing to Cloud Commerce Pro
 
 ```
-php artisan migrate
+php artisan create:api:user
 ```
 
