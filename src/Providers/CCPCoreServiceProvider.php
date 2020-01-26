@@ -24,9 +24,9 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
     {
         parent::boot();
 
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+        
         $this->app->booted(static function () {
-
-            $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
             \Route::middleware(['auth:api'])->group(function () {
                 \Route::match(['get'], 'ccp/categories', [CcpController::class, 'categories'])->name('ccp.categories');
