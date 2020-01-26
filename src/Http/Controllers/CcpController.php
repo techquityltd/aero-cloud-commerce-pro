@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 class CcpController
 {
     /**
-     * Category list for CCP.
+     * Update stock API for CCP.
      *
      *
      * @return void
@@ -24,8 +24,7 @@ class CcpController
         if ($request->isMethod('post')) {
 
             $json = json_decode($request->getContent(), true);
-
-
+            
             if(is_array($json)) {
 
                 foreach($json as $stock) {
