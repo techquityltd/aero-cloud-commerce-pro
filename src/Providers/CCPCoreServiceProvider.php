@@ -31,8 +31,8 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
 
             \Route::middleware(['auth:api'])->group(function () {
                 \Route::match(['get'], 'ccp/categories', [CcpController::class, 'categories'])->name('ccp.categories');
-                \Route::match(['get'], 'ccp/listings', [CcpController::class, 'listings'])->name('ccp.listings');
-                \Route::match(['get'], 'ccp/orders', [CcpController::class, 'orders'])->name('ccp.orders');
+                \Route::match(['get'], 'ccp/listings/{sku?}', [CcpController::class, 'listings'])->name('ccp.listings');
+                \Route::match(['get'], 'ccp/orders/{orderReference?}', [CcpController::class, 'orders'])->name('ccp.orders');
                 \Route::match(['get'], 'ccp/csv', [CcpController::class, 'csv'])->name('ccp.csv');
                 \Route::match(['post'], 'ccp/stock', [CcpController::class, 'stock'])->name('ccp.stock');
                 \Route::match(['post'], 'ccp/dispatch', [CcpController::class, 'dispatch'])->name('ccp.dispatch');

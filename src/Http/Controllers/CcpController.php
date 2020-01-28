@@ -168,6 +168,97 @@ class CcpController
 
     }
 
+    /**
+     * Listings for CCP.
+     *
+     *
+     * @return Object
+     */
+    public function listings($sku=null)
+    {
+        $return = [];
+
+        foreach (Product::when($sku, function($query) use($sku){$query->whereHas('variants', function($query) use ($sku){$query->where('sku', $sku);});})->cursor() as $product) {
+
+            $return[] = ([
+
+                'id' => $product->id,
+                'parent_ref' => $product->model,
+                'url' => $product->getUrl(true),
+                'name' => $product->name,
+                'summary' => $product->summary,
+                'description' => $product->description,
+
+                'images' => $product->images->where('default', 1)->map(function($image){
+                    return collect(['url' => trim(env('APP_URL').'/').($image->file)])->toArray();
+                })->values(),
+
+                'categories' => $product->categories->map(function($category) {
+
+                    return collect([
+                        'id' => $category->id,
+                        'name' => htmlspecialchars(
+                            collect($category->getAncestors()->pluck('name'))->push($category->name)->implode(' > '),
+                            ENT_QUOTES | ENT_HTML5
+                        ),
+
+                    ])->toArray();
+                })->values(),
+
+                'manufacturer' => $product->manufacturer->name,
+
+                'tags' => $product->tags->map(function($tag) {
+
+                    return collect([
+                        'name' => $tag->group->name,
+                        'value' => $tag->name,
+
+                    ])->toArray();
+                })->values(),
+
+
+                'variants' => $product->variants->map(function($variant){
+
+                    $inc = setting('prices_inserted_inc_tax');
+
+                    $rate = ($variant->getPriceForQuantity(1)->sale_value_inc - $variant->getPriceForQuantity(1)->sale_value_ex) / $variant->getPriceForQuantity(1)->sale_value_ex * 100;
+
+                    return collect([
+                        'id' => $variant->id,
+                        'sku' => $variant->sku,
+                        'barcode' => $variant->barcode,
+                        'images' => $variant->images->map(function($image) {
+                            return collect(['url' => trim(env('APP_URL').'/').($image->file)])->toArray();
+                        })->values(),
+
+                        'stock' => $variant->stock_level,
+                        'vat_rate' => round($rate),
+                        'price' => ($variant->getPriceForQuantity(1)->sale_value_inc / 100),
+                        'price_ex' => ($variant->getPriceForQuantity(1)->sale_value_ex / 100),
+                        'vat_amount' => (($variant->getPriceForQuantity(1)->sale_value_inc - $variant->getPriceForQuantity(1)->sale_value_ex) / 100),
+
+                        'attributes' => $variant->attributes->map(function($attribute) {
+
+                            return collect([
+                                'name' => $attribute->group->name,
+                                'value' => $attribute->name
+
+                            ])->toArray();
+                        })->values(),
+
+                    ])->toArray();
+
+
+                })->values(),
+
+            ]);
+
+
+
+        };
+
+        return response()->json(($return), JSON_UNESCAPED_UNICODE);
+    }
 
     /**
      * Listings for CCP.
@@ -175,7 +266,7 @@ class CcpController
      *
      * @return Object
      */
-    public function listings()
+    public function variants()
     {
         $return = [];
 
@@ -191,8 +282,6 @@ class CcpController
                 $return[$variant->id]['name'] = $variant->product->name;
                 $return[$variant->id]['manufacturer'] = $variant->product->manufacturer->name;
                 $return[$variant->id]['parent_ref'] = $variant->product->model;
-                $return[$variant->id]['summary'] = $variant->product->summary;
-                $return[$variant->id]['description'] = $variant->product->description;
 
                 $return[$variant->id]['categories'] = $variant->product->categories->map(function($category) {
 
@@ -248,11 +337,11 @@ class CcpController
      *
      * @return Object
      */
-    public function orders()
+    public function orders($orderReference=null)
     {
         $return = [];
 
-        foreach (Order::whereIn('order_status_id', config('aero.cloudcommercepro.order_statuses'))->cursor() as $order) {
+        foreach (Order::whereIn('order_status_id', config('aero.cloudcommercepro.order_statuses'))->when($orderReference, function($query) use($orderReference){$query->where('reference', '=', $orderReference);})->cursor() as $order) {
 
 
             $return[] = ([
