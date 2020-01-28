@@ -177,6 +177,7 @@ class CcpController
     public function listings($sku=null)
     {
         $return = [];
+        $sku = urldecode($sku);
 
         foreach (Product::when($sku, function($query) use($sku){$query->whereHas('variants', function($query) use ($sku){$query->where('sku', $sku);});})->cursor() as $product) {
 
@@ -340,7 +341,8 @@ class CcpController
     public function orders($orderReference=null)
     {
         $return = [];
-
+        $orderReference = urldecode($orderReference);
+        
         foreach (Order::whereIn('order_status_id', config('aero.cloudcommercepro.order_statuses'))->when($orderReference, function($query) use($orderReference){$query->where('reference', '=', $orderReference);})->cursor() as $order) {
 
 
