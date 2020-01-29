@@ -191,7 +191,8 @@ class CcpController
                 'description' => $product->description,
 
                 'images' => $product->images->where('default', 1)->map(function($image){
-                    return collect(['url' => trim(env('APP_URL').'/').($image->file)])->toArray();
+                    return collect(['url' => route('image-resize', ['500x500', $image->file])])->toArray();
+
                 })->values(),
 
                 'categories' => $product->categories->map(function($category) {
@@ -229,7 +230,7 @@ class CcpController
                         'sku' => $variant->sku,
                         'barcode' => $variant->barcode,
                         'images' => $variant->images->map(function($image) {
-                            return collect(['url' => trim(env('APP_URL').'/').($image->file)])->toArray();
+                            return collect(['url' => route('image-resize', ['500x500', $image->file])])->toArray();
                         })->values(),
 
                         'stock' => $variant->stock_level,
@@ -342,7 +343,7 @@ class CcpController
     {
         $return = [];
         $orderReference = urldecode($orderReference);
-        
+
         foreach (Order::whereIn('order_status_id', config('aero.cloudcommercepro.order_statuses'))->when($orderReference, function($query) use($orderReference){$query->where('reference', '=', $orderReference);})->cursor() as $order) {
 
 
