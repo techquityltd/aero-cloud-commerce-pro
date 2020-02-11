@@ -11,9 +11,52 @@ use Aero\Catalog\Models\Product;
 use Illuminate\Support\Arr;
 
 use Illuminate\Http\Request;
+use League\Csv\Writer;
+use Techquity\CloudCommercePro\Helpers\Import;
+use Illuminate\Support\Facades\Artisan;
 
 class CcpController
 {
+    protected $defaults = [];
+    protected $images = [];
+
+    public function __construct() {
+
+        $this->defaults = [
+            'Model' => '',
+            'Name' => '',
+            'Manufacturer' => '',
+            'Category' => '',
+            'Summary' => '',
+            'Description' => '',
+            'Image Src' => '',
+            'Image Alt Text' => '',
+            'Image Position' => '',
+            'Image Is Default' => '',
+            'SKU' => '',
+            'Barcode' => '',
+            'Weight' => '',
+            'Weight Unit' => '',
+            'Stock Level' => '',
+            'Infinite Stock' => '',
+            'Currency' => '',
+            'Tax Group' => '',
+            'Price Quantity' => '',
+            'Price' => '',
+            'Sale Price' => '',
+            'Retail Price' => '',
+            'Tag Group' => '',
+            'Tag Name' => '',
+            'Attribute Group' => '',
+            'Attribute Name' => '',
+            'Attribute Group Is Listable' => '',
+            'Upsell' => '',
+            'Created At' => '',
+        ];
+
+    }
+
+
     public function csv() {
 
         $headers = array(
@@ -78,6 +121,14 @@ class CcpController
 
         return response()->stream($callback, 200, $headers);
     }
+
+
+
+
+
+
+
+
 
     /**
      * Update stock API for CCP.
@@ -261,6 +312,90 @@ class CcpController
 
         return response()->json(($return), JSON_UNESCAPED_UNICODE);
     }
+
+    /**
+     * Create / Edit / Remove Product via for CCP.
+     *
+     *
+     * @return Object
+     */
+    public function product(Request $request) {
+
+        if ($request->isMethod('post')) {
+
+            $product = json_decode($request->getContent(), true);
+
+            $data = [];
+
+            if(isset($product['parent_ref'])) {
+
+                $data[] = array_merge($this->defaults, [
+                    'Model' => $product['parent_ref'],
+                    'Name' => $product['name'],
+                    'Manufacturer' => isset($product['manufacturer']) ? $product['manufacturer']:null,
+                    'Summary' => isset($product['summary']) ? $product['summary']:null,
+                    'Description' => isset($product['description']) ? $product['description']:null,
+                ]);
+
+                Import::addImages($product['images'], $product, $data, $this->defaults);
+
+                Import::addCategories($product['categories'], $product, $data, $this->defaults);
+
+                foreach($product['tags'] as $tag) {
+                    Import::addTags($tag['name'], $tag['value'], $product, $data, $this->defaults);
+                }
+
+
+                foreach($product['variants'] as $variant) {
+
+                    $data[] = array_merge($this->defaults, [
+                        'Model' => $product['parent_ref'],
+                        'SKU' => $variant['sku'],
+                        'Barcode' => $variant['barcode'] ?? null,
+                        //'Weight' => $row['Weight (in KGs)'],
+                        //'Weight Unit' => 'g',
+                        'Stock Level' => $variant['stock'],
+                        //'Infinite Stock' => 0,
+                        'Currency' => 'GBP',
+                        'Tax Group' => 'Taxable Product',
+                        'Price Quantity' => 1,
+                        'Price' => $variant['price'],
+                        'Sale Price' => null,
+                        'Retail Price' => null,
+                    ]);
+
+                    //Import::addCategories($product['categories'], $variant, $data, $this->defaults, $product['parent_ref']);
+
+
+                    foreach($variant['attributes'] as $attribute) {
+
+                        Import::addAttribute($attribute['name'], $attribute['value'], $variant, $data, $this->defaults, $product['parent_ref']);
+
+                    }
+
+                }
+
+            }
+
+
+
+            //dd($data);
+            $csv = Writer::createFromPath(storage_path("app/cloudcommercepro/{$product['parent_ref']}"), 'w+');
+            $csv->insertOne(array_keys(Arr::first($data)));
+            $csv->insertAll($data);
+
+            Artisan::call("aero:import:products:csv", ['path' => "cloudcommercepro/{$product['parent_ref']}"]);
+
+            return "Successful";
+        }
+
+    }
+
+
+
+
+
+
 
     /**
      * Listings for CCP.
