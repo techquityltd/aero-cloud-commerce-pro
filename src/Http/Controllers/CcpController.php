@@ -327,7 +327,7 @@ class CcpController
 
             $data = [];
 
-            if(isset($product['parent_ref'])) {
+            if(isset($product['parent_ref']) && isset($product['name'])) {
 
                 $data[] = array_merge($this->defaults, [
                     'Model' => $product['parent_ref'],
@@ -388,15 +388,19 @@ class CcpController
                     }
 
                 }
+                //dd($data);
+                $csv = Writer::createFromPath(storage_path("app/cloudcommercepro/queue/products/{$product['parent_ref']}.csv"), 'w+');
+                $csv->insertOne(array_keys(Arr::first($data)));
+                $csv->insertAll($data);
 
+                return "Successful";
+            } else {
+
+                return "Missing 'parent_ref' or 'name'";
+                
             }
 
-            //dd($data);
-            $csv = Writer::createFromPath(storage_path("app/cloudcommercepro/queue/products/{$product['parent_ref']}.csv"), 'w+');
-            $csv->insertOne(array_keys(Arr::first($data)));
-            $csv->insertAll($data);
 
-            return "Successful";
         }
 
     }
