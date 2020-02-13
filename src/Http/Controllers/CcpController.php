@@ -380,7 +380,7 @@ class CcpController
 
 
             //dd($data);
-            $csv = Writer::createFromPath(storage_path("app/cloudcommercepro/queue/products/{$product['parent_ref']}"), 'w+');
+            $csv = Writer::createFromPath(storage_path("app/cloudcommercepro/queue/products/{$product['parent_ref']}.csv"), 'w+');
             $csv->insertOne(array_keys(Arr::first($data)));
             $csv->insertAll($data);
 
