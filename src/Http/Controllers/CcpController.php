@@ -337,47 +337,59 @@ class CcpController
                     'Description' => isset($product['description']) ? $product['description']:null,
                 ]);
 
-                Import::addImages($product['images'], $product, $data, $this->defaults);
+                if(isset($product['images']) && count($product['images']) > 0) {
+                    Import::addImages($product['images'], $product, $data, $this->defaults);
+                }
 
-                Import::addCategories($product['categories'], $product, $data, $this->defaults);
-
-                foreach($product['tags'] as $tag) {
-                    Import::addTags($tag['name'], $tag['value'], $product, $data, $this->defaults);
+                if(isset($product['categories']) && count($product['categories']) > 0) {
+                    Import::addCategories($product['categories'], $product, $data, $this->defaults);
                 }
 
 
-                foreach($product['variants'] as $variant) {
-
-                    $data[] = array_merge($this->defaults, [
-                        'Model' => $product['parent_ref'],
-                        'SKU' => $variant['sku'],
-                        'Barcode' => $variant['barcode'] ?? null,
-                        //'Weight' => $row['Weight (in KGs)'],
-                        //'Weight Unit' => 'g',
-                        'Stock Level' => $variant['stock'],
-                        //'Infinite Stock' => 0,
-                        'Currency' => 'GBP',
-                        'Tax Group' => 'Taxable Product',
-                        'Price Quantity' => 1,
-                        'Price' => $variant['price'],
-                        'Sale Price' => null,
-                        'Retail Price' => null,
-                    ]);
-
-                    //Import::addCategories($product['categories'], $variant, $data, $this->defaults, $product['parent_ref']);
+                if(isset($product['tags']) && count($product['tags']) > 0) {
+                    foreach($product['tags'] as $tag) {
+                        Import::addTags($tag['name'], $tag['value'], $product, $data, $this->defaults);
+                    }
+                }
 
 
-                    foreach($variant['attributes'] as $attribute) {
+                if(isset($product['variants']) && count($product['variants']) > 0) {
 
-                        Import::addAttribute($attribute['name'], $attribute['value'], $variant, $data, $this->defaults, $product['parent_ref']);
+                    foreach($product['variants'] as $variant) {
+
+                        $data[] = array_merge($this->defaults, [
+                            'Model' => $product['parent_ref'],
+                            'SKU' => $variant['sku'],
+                            'Barcode' => $variant['barcode'] ?? null,
+                            //'Weight' => $row['Weight (in KGs)'],
+                            //'Weight Unit' => 'g',
+                            'Stock Level' => $variant['stock'] ?? null,
+                            //'Infinite Stock' => 0,
+                            'Currency' => 'GBP',
+                            'Tax Group' => 'Taxable Product',
+                            'Price Quantity' => 1,
+                            'Price' => $variant['price'] ?? null,
+                            'Sale Price' => null,
+                            'Retail Price' => null,
+                        ]);
+
+                        //Import::addCategories($product['categories'], $variant, $data, $this->defaults, $product['parent_ref']);
+
+                        if(isset($variant['attributes']) && count($variant['attributes']) > 0) {
+
+                            foreach($variant['attributes'] as $attribute) {
+
+                                Import::addAttribute($attribute['name'], $attribute['value'], $variant, $data, $this->defaults, $product['parent_ref']);
+
+                            }
+
+                        }
 
                     }
 
                 }
 
             }
-
-
 
             //dd($data);
             $csv = Writer::createFromPath(storage_path("app/cloudcommercepro/queue/products/{$product['parent_ref']}.csv"), 'w+');
@@ -388,11 +400,6 @@ class CcpController
         }
 
     }
-
-
-
-
-
 
 
     /**
