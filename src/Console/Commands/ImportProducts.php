@@ -20,7 +20,17 @@ class ImportProducts extends Command
     {
         //
 
-        $this->call("aero:import:products:csv", ['path' => "cloudcommercepro/{$product['parent_ref']}"]);
+        $appPath = storage_path().'/app/';
+        $ccpPath = 'cloudcommercepro/queue/products';
+
+        // Get files
+        $files = glob($appPath.$ccpPath.'/*.csv', 0);
+
+        foreach($files as $file) {
+
+            $this->call("aero:import:products:csv", ['path' => "{$ccpPath}/".basename($file)]);
+            @rename ($file, $appPath.$ccpPath.'/processed/'.basename($file));
+        }
 
     }
 }

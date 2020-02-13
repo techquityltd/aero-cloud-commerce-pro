@@ -4,6 +4,8 @@ namespace Techquity\CloudCommercePro\Providers;
 
 use Aero\Common\Providers\ModuleServiceProvider;
 
+use Illuminate\Console\Scheduling\Schedule;
+
 use Techquity\CloudCommercePro\Console\Commands\ImportProducts;
 use Techquity\CloudCommercePro\Http\Controllers\CcpController;
 use Techquity\CloudCommercePro\Console\Commands\CreateUser;
@@ -25,6 +27,11 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
     public function boot()
     {
         parent::boot();
+
+        $schedule = app(Schedule::class);
+
+        $schedule->command('ccp:import:products')
+            ->everyMinute();
 
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
