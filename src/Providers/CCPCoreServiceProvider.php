@@ -4,6 +4,7 @@ namespace Techquity\CloudCommercePro\Providers;
 
 use Aero\Common\Providers\ModuleServiceProvider;
 
+use Techquity\CloudCommercePro\Console\Commands\ImportProducts;
 use Techquity\CloudCommercePro\Http\Controllers\CcpController;
 use Techquity\CloudCommercePro\Console\Commands\CreateUser;
 
@@ -52,7 +53,8 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
     public function register()
     {
         $this->commands([
-            CreateUser::class
+            CreateUser::class,
+            ImportProducts::class
         ]);
     }
 }

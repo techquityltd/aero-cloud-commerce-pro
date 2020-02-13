@@ -380,11 +380,9 @@ class CcpController
 
 
             //dd($data);
-            $csv = Writer::createFromPath(storage_path("app/cloudcommercepro/{$product['parent_ref']}"), 'w+');
+            $csv = Writer::createFromPath(storage_path("app/cloudcommercepro/queue/products/{$product['parent_ref']}"), 'w+');
             $csv->insertOne(array_keys(Arr::first($data)));
             $csv->insertAll($data);
-
-            Artisan::call("aero:import:products:csv", ['path' => "cloudcommercepro/{$product['parent_ref']}"]);
 
             return "Successful";
         }
