@@ -258,7 +258,7 @@ class CcpController
                     ])->toArray();
                 })->values(),
 
-                'manufacturer' => $product->manufacturer->name,
+                'manufacturer' => optional($product->manufacturer->name),
 
                 'tags' => $product->tags->map(function($tag) {
 
@@ -397,7 +397,7 @@ class CcpController
             } else {
 
                 return "Missing 'parent_ref' or 'name'";
-                
+
             }
 
 
