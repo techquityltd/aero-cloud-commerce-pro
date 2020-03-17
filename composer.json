@@ -7,7 +7,7 @@
     }
   },
   "require": {
-    "aerocommerce/core" : "^0.1"
+    "aerocommerce/core" : "^0"
   },
   "extra": {
     "laravel": {
