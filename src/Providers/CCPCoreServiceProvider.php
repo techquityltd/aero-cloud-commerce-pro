@@ -28,14 +28,12 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
     {
         parent::boot();
 
-        $schedule = app(Schedule::class);
-
-        $schedule->command('ccp:import:products')
-            ->everyMinute();
-
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
-        $this->app->booted(static function () {
+        $this->app->booted(function () {
+
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->command('ccp:import:products')->everyMinute();
 
             \Route::middleware(['auth:api'])->group(function () {
                 \Route::match(['get'], 'ccp/categories', [CcpController::class, 'categories'])->name('ccp.categories');
