@@ -258,7 +258,7 @@ class CcpController
                     ])->toArray();
                 })->values(),
 
-                'manufacturer' => optional($product->manufacturer->name),
+                'manufacturer' => optional($product->manufacturer)->name,
 
                 'tags' => $product->tags->map(function($tag) {
 
