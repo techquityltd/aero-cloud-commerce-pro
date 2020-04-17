@@ -230,7 +230,7 @@ class CcpController
         $return = [];
         $sku = urldecode($sku);
 
-        foreach (Product::when($sku, function($query) use($sku){$query->whereHas('variants', function($query) use ($sku){$query->where('sku', $sku);});})->cursor() as $product) {
+        foreach (Product::when($sku, function($query) use($sku){$query->whereHas('variants', function($query) use ($sku){$query->where('sku', $sku);});})->jsonPaginate() as $product) {
 
             $return[] = ([
 

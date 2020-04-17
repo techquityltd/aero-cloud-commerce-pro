@@ -5,6 +5,8 @@ namespace Techquity\CloudCommercePro\Providers;
 use Aero\Common\Providers\ModuleServiceProvider;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
 use Techquity\CloudCommercePro\Console\Commands\ImportProducts;
 use Techquity\CloudCommercePro\Http\Controllers\CcpController;
@@ -46,6 +48,28 @@ class CcpCoreServiceProvider extends ModuleServiceProvider
 
             });
 
+            Builder::macro('jsonPaginate', function (int $maxResults = null, int $defaultSize = null) {
+                $maxResults = $maxResults ?? 100;
+                $defaultSize = $defaultSize ?? 100;
+                $numberParameter = 'number';
+                $sizeParameter = 'size';
+                $paginationParameter = 'page';
+
+                $size = (int) request()->input($paginationParameter.'.'.$sizeParameter, $defaultSize);
+
+                $size = $size > $maxResults ? $maxResults : $size;
+
+                $paginator = $this
+                    ->paginate($size, ['*'], $paginationParameter.'.'.$numberParameter)
+                    ->setPageName($paginationParameter.'['.$numberParameter.']')
+                    ->appends(Arr::except(request()->input(), $paginationParameter.'.'.$numberParameter));
+
+                //if (! is_null(config('json-api-paginate.base_url'))) {
+                //    $paginator->setPath(config('json-api-paginate.base_url'));
+                //}
+
+                return $paginator;
+            });
         });
 
     }
