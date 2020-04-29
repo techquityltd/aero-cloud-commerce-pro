@@ -361,7 +361,7 @@ class CcpController
                             'Model' => $product['parent_ref'],
                             'SKU' => $variant['sku'],
                             'Barcode' => $variant['barcode'] ?? null,
-                            //'Weight' => $row['Weight (in KGs)'],
+                            'Weight' =>  $variant['weight'] ?? 0,
                             //'Weight Unit' => 'g',
                             'Stock Level' => $variant['stock'] ?? null,
                             //'Infinite Stock' => 0,
@@ -423,6 +423,7 @@ class CcpController
                 $return[$variant->id]['id'] = $variant->id;
                 $return[$variant->id]['sku'] = $variant->sku;
                 $return[$variant->id]['barcode'] = $variant->barcode;
+                $return[$variant->id]['weight'] = $variant->weight;
                 $return[$variant->id]['image'] = isset($variant->product->images->first()->file) ? trim(env('APP_URL').'/').($variant->product->images->first()->file) : null;
                 $return[$variant->id]['url'] = $variant->product->getUrl(true);
                 $return[$variant->id]['name'] = $variant->product->name;
