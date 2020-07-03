@@ -366,6 +366,7 @@ class CcpController
                             'Stock Level' => $variant['stock'] ?? null,
                             //'Infinite Stock' => 0,
                             'Currency' => 'GBP',
+                            'Cost Price' => $variant['cost_price'] ?? null,
                             'Tax Group' => 'Taxable Product',
                             'Price Quantity' => 1,
                             'Price' => $variant['price'] ?? null,
@@ -464,7 +465,7 @@ class CcpController
                 }
 
                 $rate = ($variant->getPriceForQuantity(1)->sale_value_inc - $variant->getPriceForQuantity(1)->sale_value_ex) / $variant->getPriceForQuantity(1)->sale_value_ex * 100;
-
+                $return[$variant->id]['cost_price'] = $variant->cost_price;
                 $return[$variant->id]['vat_rate'] = round($rate);
                 $return[$variant->id]['stock'] = $variant->stock_level;
 
