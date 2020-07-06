@@ -43,6 +43,7 @@ class CcpController
             'Tax Group' => '',
             'Price Quantity' => '',
             'Price' => '',
+            'Cost Price' => '', 
             'Sale Price' => '',
             'Retail Price' => '',
             'Tag Group' => '',
