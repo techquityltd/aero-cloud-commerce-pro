@@ -41,6 +41,7 @@ class CcpController
             'Infinite Stock' => '',
             'Currency' => '',
             'Tax Group' => '',
+            'Variant Visible' => '',
             'Price Quantity' => '',
             'Price' => '',
             'Cost Price' => '',
@@ -373,6 +374,7 @@ class CcpController
                             'Price' => $variant['price'] ?? null,
                             'Sale Price' => null,
                             'Retail Price' => null,
+                            'Variant Visible' => $variant['variant_visible'] ?? null,
                         ]);
 
                         //Import::addCategories($product['categories'], $variant, $data, $this->defaults, $product['parent_ref']);
