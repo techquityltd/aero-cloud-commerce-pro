@@ -28,6 +28,7 @@ class CcpController
             'Manufacturer' => '',
             'Category' => '',
             'Summary' => '',
+            'Visible' => '',
             'Description' => '',
             'Image Src' => '',
             'Image Alt Text' => '',
@@ -334,6 +335,7 @@ class CcpController
                 $data[] = array_merge($this->defaults, [
                     'Model' => $product['parent_ref'],
                     'Name' => $product['name'],
+                    'Visible' => $product['visible'] ?? 1,
                     'Manufacturer' => isset($product['manufacturer']) ? $product['manufacturer']:null,
                     'Summary' => isset($product['summary']) ? $product['summary']:null,
                     'Description' => isset($product['description']) ? $product['description']:null,
@@ -374,7 +376,7 @@ class CcpController
                             'Price' => $variant['price'] ?? null,
                             'Sale Price' => null,
                             'Retail Price' => null,
-                            'Variant Visible' => $variant['variant_visible'] ?? null,
+                            'Variant Visible' => $variant['variant_visible'] ?? 1,
                         ]);
 
                         //Import::addCategories($product['categories'], $variant, $data, $this->defaults, $product['parent_ref']);
