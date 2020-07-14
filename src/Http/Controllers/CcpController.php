@@ -48,6 +48,9 @@ class CcpController
             'Cost Price' => '',
             'Sale Price' => '',
             'Retail Price' => '',
+            'Heading' => '',
+            'Page Title' => '',
+            'Meta Description' => '',
             'Tag Group' => '',
             'Tag Name' => '',
             'Attribute Group' => '',
@@ -339,6 +342,9 @@ class CcpController
                     'Manufacturer' => isset($product['manufacturer']) ? $product['manufacturer']:null,
                     'Summary' => isset($product['summary']) ? $product['summary']:null,
                     'Description' => isset($product['description']) ? $product['description']:null,
+                    'Heading' => isset($product['page_heading']) ? $product['page_heading']:null,
+                    'Page Title' => isset($product['page_title']) ? $product['page_title']:null,
+                    'Meta Description' => isset($product['meta_description']) ? $product['meta_description']:null,
                 ]);
 
                 if(isset($product['images']) && count($product['images']) > 0) {
