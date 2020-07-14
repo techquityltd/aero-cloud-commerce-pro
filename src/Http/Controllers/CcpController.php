@@ -57,6 +57,7 @@ class CcpController
             'Attribute Name' => '',
             'Attribute Group Is Listable' => '',
             'Upsell' => '',
+            'Published At' => '',
             'Created At' => '',
         ];
 
@@ -345,6 +346,8 @@ class CcpController
                     'Heading' => isset($product['page_heading']) ? $product['page_heading']:null,
                     'Page Title' => isset($product['page_title']) ? $product['page_title']:null,
                     'Meta Description' => isset($product['meta_description']) ? $product['meta_description']:null,
+                    'Published At' => isset($product['published_at']) ? $product['published_at']:null,
+                    'Created At' => isset($product['created_at']) ? $product['created_at']:null,
                 ]);
 
                 if(isset($product['images']) && count($product['images']) > 0) {
