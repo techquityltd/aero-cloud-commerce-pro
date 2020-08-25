@@ -555,8 +555,22 @@ class CcpController
                 'shipping_email' => $order->email,
 
                 'items' => $order->items->map(function ($item) {
-
                     $rate =  $item->tax / $item->price * 100;
+
+                    if ($item->buyable_id == 0) {
+                        return collect([
+                            'id' => '0',
+                            'reference' => $item->key,
+                            'sku' => $item->sku,
+                            'barcode' => '',
+                            'name' => $item->name,
+                            'quantity' => $item->quantity,
+                            'price_ex' => ($item->price / 100),
+                            'vat' => ($item->tax / 100),
+                            'vat_rate' => $rate,
+                            'additional_options' => in_array("Gift Wrap", (Arr::pluck(isset($item->options) ? $item->options : [], 'name'))) ? 'Gift Wrap':'',
+                        ])->toArray();
+                    }
 
                     return collect([
                         'id' => $item->buyable->id,
