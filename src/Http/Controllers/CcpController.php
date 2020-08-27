@@ -281,8 +281,12 @@ class CcpController
 
                     $inc = setting('prices_inserted_inc_tax');
 
-                    $rate = ($variant->getPriceForQuantity(1)->sale_value_inc - $variant->getPriceForQuantity(1)->sale_value_ex) / $variant->getPriceForQuantity(1)->sale_value_ex * 100;
-
+                    if($variant->getPriceForQuantity(1)->sale_value_ex > 0) {
+                        $rate = ($variant->getPriceForQuantity(1)->sale_value_inc - $variant->getPriceForQuantity(1)->sale_value_ex) / $variant->getPriceForQuantity(1)->sale_value_ex * 100;
+                    } else {
+                        $rate = 20;
+                    }
+                    
                     return collect([
                         'id' => $variant->id,
                         'sku' => $variant->sku,
