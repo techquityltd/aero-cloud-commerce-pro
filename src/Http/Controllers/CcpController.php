@@ -66,6 +66,7 @@ class CcpController
 
     public function csv() {
 
+        ini_set('memory_limit', '2G');
         $headers = array(
             "Content-type" => "text/csv",
             "Content-Disposition" => "attachment; filename=csv_export.csv",
@@ -286,7 +287,7 @@ class CcpController
                     } else {
                         $rate = 20;
                     }
-                    
+
                     return collect([
                         'id' => $variant->id,
                         'sku' => $variant->sku,
