@@ -560,7 +560,11 @@ class CcpController
                 'shipping_email' => $order->email,
 
                 'items' => $order->items->map(function ($item) {
-                    $rate =  $item->tax / $item->price * 100;
+                    if ($item->price == 0) {
+                        $rate = 0;
+                    } else {
+                        $rate = $item->tax / $item->price * 100;
+                    }
 
                     if ($item->buyable_id == 0) {
                         return collect([
