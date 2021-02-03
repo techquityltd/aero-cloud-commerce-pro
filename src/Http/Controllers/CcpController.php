@@ -165,7 +165,7 @@ class CcpController
                         $parent = Product::find($variant->product_id);
                         event(new ProductUpdated($parent));
                     } else {
-                        Log::info('CCP unable to update stock: ' . print_r($stock, true));
+                        Log::info('CCP unable to update stock: ' . json_encode($stock));
                     }
                 }
             }
