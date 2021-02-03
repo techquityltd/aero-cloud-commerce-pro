@@ -11,6 +11,7 @@ use Aero\Catalog\Models\Product;
 use Illuminate\Support\Arr;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use League\Csv\Writer;
 use Techquity\CloudCommercePro\Helpers\Import;
 use Illuminate\Support\Facades\Artisan;
@@ -163,6 +164,8 @@ class CcpController
                         // Trigger updated event
                         $parent = Product::find($variant->product_id);
                         event(new ProductUpdated($parent));
+                    } else {
+                        Log::info('CCP unable to update stock: ' . print_r($stock, true));
                     }
                 }
             }
